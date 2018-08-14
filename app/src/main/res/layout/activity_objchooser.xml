@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:weightSum="10"
+    android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:orientation="vertical"
+            android:layout_weight="9.5">
+
+            <TextView
+                android:id="@+id/Heade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="casual"
+                android:text="Choose A Model..."
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                android:textStyle="bold"
+                android:typeface="normal" />
+
+            <ListView
+                android:id="@+id/file_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:footerDividersEnabled="false"
+                android:headerDividersEnabled="false"
+                android:scrollbarStyle="insideInset"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+
+    <EditText
+        android:id="@+id/editText"
+        style="@android:style/Widget.DeviceDefault.EditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:ems="10"
+        android:fontFamily="casual"
+        android:inputType="text|textNoSuggestions"
+        android:text="Search..."
+        android:textStyle="italic" />
+    </LinearLayout>

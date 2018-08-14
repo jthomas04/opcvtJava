@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+
+    <Button
+        android:id="@+id/btnSelectPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Photo"
+        android:layout_weight="1"/>
+
+    <ImageView
+        android:id="@+id/ivImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="8"
+        android:adjustViewBounds="false"
+        android:cropToPadding="true"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:onClick="cropit"
+            android:text="Crop" />
+
+        <Button
+            android:id="@+id/testBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="showKps"
+            android:text="Show KP's"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/accbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_weight="0.5"
+            android:onClick="accept"
+            android:text="Accept" />
+    </LinearLayout>
+
+
+</LinearLayout>
+
