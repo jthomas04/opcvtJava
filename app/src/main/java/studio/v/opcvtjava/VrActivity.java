@@ -74,6 +74,8 @@ public class VrActivity extends Activity implements SensorEventListener2 {
 
     private int sType;
 
+    private boolean linearDirty = false;
+
     private int sensorStatus = 0;
     private final short ACCEL = 1;
     private final short GYRO = 2;
@@ -261,8 +263,9 @@ public class VrActivity extends Activity implements SensorEventListener2 {
         mAccelerometerReading[1] = (mAccelerometerOldReading[1] + mAccelerometerReading[1])/2;
         mAccelerometerReading[2] = (mAccelerometerReading[2] + mAccelerometerOldReading[2]/2);
         //switch based on which sensors where last updated!! */
-       if((sensorStatus & LINEAR) == LINEAR){
-
+       if( (sensorStatus & LINEAR) == LINEAR){
+               //(sensorStatus == (AM | LINEAR) || sensorStatus == (AG | LINEAR) || sensorStatus == (AGM | LINEAR) )){
+           linearDirty = true;
        }
         if(sensorStatus == AM){
             // Update rotation matrix, which is needed to update orientation angles.
@@ -374,9 +377,12 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             //getCurrentCamera().setRotation(mat4); //.inverse());
             a.setRotation(mat4);
             //2, 1, 0 because X axis moves right positively.
-            a.moveForward(mLAccelerationReading[2]);
-            a.moveUp(mLAccelerationReading[1]);
-            a.moveRight(mLAccelerationReading[0]);
+            if(linearDirty){
+                a.moveForward(mLAccelerationReading[2]);
+                a.moveUp(mLAccelerationReading[1]);
+                a.moveRight(mLAccelerationReading[0]);
+                linearDirty = false;
+            }
 
 //            getCurrentCamera().setCameraYaw(eulers[0]);
 //            getCurrentCamera().setCameraPitch(eulers[2]);
