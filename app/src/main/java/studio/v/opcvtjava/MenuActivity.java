@@ -1,4 +1,4 @@
-package studio.v.opcvt;
+package studio.v.opcvtjava;
 
 
 import java.io.FileNotFoundException;
@@ -42,7 +42,7 @@ import org.opencv.videoio.VideoCapture;
 
 
 import min3d.core.RendererActivity;
-import studio.v.opcvt.ART;
+//import studio.v.opcvtjava.ART;
 
 
 import static android.R.attr.data;

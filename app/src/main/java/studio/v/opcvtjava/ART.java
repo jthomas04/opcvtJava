@@ -1,4 +1,4 @@
-package studio.v.opcvt;
+package studio.v.opcvtjava;
 
 // Augmented Reality Tracking Class Written by JJ, uses ORB feature dectection, ORB Descriptor extractor, BF Based Matching & RANSAC to compute Homography
 // Marker must be loaded into public ar.marker Mat externally after initialization

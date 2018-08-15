@@ -1,4 +1,4 @@
-package studio.v.opcvt;
+package studio.v.opcvtjava;
 
 import min3d.core.RendererActivity;
 import min3d.core.Object3dContainer;
