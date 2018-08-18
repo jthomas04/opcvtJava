@@ -50,6 +50,8 @@ public class VrActivity extends Activity implements SensorEventListener2 {
     private final float alpha = 0.8f;
     private final float[] mGravityReading = new float[3];
     private final float[] mLAccelerationReading = new float[3];
+    private final float[] mLAccelerationOldReading = new float[3];
+
 
     private final float[] maxLA = new float[3];
     private final float[] minLA = new float[3];
@@ -193,7 +195,7 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             System.arraycopy(event.values, 0, mAccelerometerReading,
                     0, mAccelerometerReading.length);
             // Do some sensor average=ing with old values.
-            System.arraycopy(mAccelerometerReading, 0, mAccelerometerOldReading, 0, mAccelerometerReading.length);
+           // System.arraycopy(mAccelerometerReading, 0, mAccelerometerOldReading, 0, mAccelerometerReading.length);
 
             //kf.
 
@@ -226,6 +228,7 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             sensorStatus = sensorStatus | GYRO;
         }
         else if(sType == Sensor.TYPE_LINEAR_ACCELERATION){
+            System.arraycopy(mLAccelerationReading, 0, mLAccelerationOldReading, 0, mLAccelerationReading.length);
             System.arraycopy(event.values,0, mLAccelerationReading, 0, mLAccelerationReading.length);
             sensorStatus = sensorStatus | LINEAR;
         }
@@ -265,6 +268,9 @@ public class VrActivity extends Activity implements SensorEventListener2 {
         //switch based on which sensors where last updated!! */
        if( (sensorStatus & LINEAR) == LINEAR){
                //(sensorStatus == (AM | LINEAR) || sensorStatus == (AG | LINEAR) || sensorStatus == (AGM | LINEAR) )){
+           mLAccelerationReading[0] = (mLAccelerationReading[0] + mLAccelerationOldReading[0])/2;
+           mLAccelerationReading[1] = (mLAccelerationReading[1] + mLAccelerationOldReading[1])/2;
+           mLAccelerationReading[2] = (mLAccelerationReading[2] + mLAccelerationOldReading[2])/2;
            linearDirty = true;
        }
         if(sensorStatus == AM){
@@ -378,9 +384,9 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             a.setRotation(mat4);
             //2, 1, 0 because X axis moves right positively.
             if(linearDirty){
-                a.moveForward(mLAccelerationReading[2]);
+                a.moveForward(mLAccelerationReading[0]);
                 a.moveUp(mLAccelerationReading[1]);
-                a.moveRight(mLAccelerationReading[0]);
+                a.moveRight(mLAccelerationReading[2]);
                 linearDirty = false;
             }
 
