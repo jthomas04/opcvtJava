@@ -32,6 +32,8 @@ import java.util.List;
 
 import org.opencv.video.KalmanFilter;
 
+import studio.v.opcvtjava.listeners.GravityListener;
+
 
 public class VrActivity extends Activity implements SensorEventListener2 {
     org.rajawali3d.view.SurfaceView surfaceView;
@@ -171,7 +173,7 @@ public class VrActivity extends Activity implements SensorEventListener2 {
         }
 
         if(gravity!= null){
-            mSensorManager.registerListener(list, gravity, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(new GravityListener(), gravity, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_UI);
         }
         else{
             Log.w("Sensors", "Gravity sensor un-available");
