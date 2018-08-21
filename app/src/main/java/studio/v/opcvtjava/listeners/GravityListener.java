@@ -16,10 +16,10 @@ public class GravityListener implements SensorEventListener2 {
 
     @Override
     public void onSensorChanged(SensorEvent event){
-        System.arraycopy(event, 0, gValues, 0, gValues.length);
+        System.arraycopy(event.values, 0, gValues, 0, gValues.length);
     }
 
-    public float [] getGravityValues(){
+    public float [] getValues(){
       return gValues;
     }
 

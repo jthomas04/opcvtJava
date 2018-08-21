@@ -33,6 +33,7 @@ import java.util.List;
 import org.opencv.video.KalmanFilter;
 
 import studio.v.opcvtjava.listeners.GravityListener;
+import studio.v.opcvtjava.listeners.LinearAccelerationListener;
 
 
 public class VrActivity extends Activity implements SensorEventListener2 {
@@ -42,6 +43,9 @@ public class VrActivity extends Activity implements SensorEventListener2 {
     KalmanFilter kf;
     private SensorManager mSensorManager;
     private Sensor sensor;
+
+    private LinearAccelerationListener LAL = new LinearAccelerationListener();
+    private GravityListener gL = new GravityListener();
 
     private final float[] mRotationMatrix = new float[16];
     private final float[] finalRotations = new float[16];
@@ -166,14 +170,14 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             Log.e("OnCreate", "Couldn't initialize sensors.. No Magneto-meter present on device");
         }
         if(linearA != null){
-            mSensorManager.registerListener(list, linearA, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(LAL, linearA, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_UI);
         }
         else{
             Log.w("Sensors", "Linear Acceleration sensor un-available");
         }
 
         if(gravity!= null){
-            mSensorManager.registerListener(new GravityListener(), gravity, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_UI);
+            mSensorManager.registerListener(gL, gravity, SensorManager.SENSOR_DELAY_GAME, SensorManager.SENSOR_DELAY_UI);
         }
         else{
             Log.w("Sensors", "Gravity sensor un-available");
@@ -229,11 +233,11 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             System.arraycopy(event.values, 0, mGyroscopeReading, 0, mGyroscopeReading.length);
             sensorStatus = sensorStatus | GYRO;
         }
-        else if(sType == Sensor.TYPE_LINEAR_ACCELERATION){
-            System.arraycopy(mLAccelerationReading, 0, mLAccelerationOldReading, 0, mLAccelerationReading.length);
-            System.arraycopy(event.values,0, mLAccelerationReading, 0, mLAccelerationReading.length);
-            sensorStatus = sensorStatus | LINEAR;
-        }
+//        else if(sType == Sensor.TYPE_LINEAR_ACCELERATION){
+//
+//            System.arraycopy(event.values,0, mLAccelerationReading, 0, mLAccelerationReading.length);
+//            sensorStatus = sensorStatus | LINEAR;
+//        }
         else if(sType == Sensor.TYPE_GRAVITY){
             System.arraycopy(event.values,0, mGravityReading, 0, mGravityReading.length);
             sensorStatus = sensorStatus | GRAVITY;
@@ -268,12 +272,23 @@ public class VrActivity extends Activity implements SensorEventListener2 {
         mAccelerometerReading[1] = (mAccelerometerOldReading[1] + mAccelerometerReading[1])/2;
         mAccelerometerReading[2] = (mAccelerometerReading[2] + mAccelerometerOldReading[2]/2);
         //switch based on which sensors where last updated!! */
-       if( (sensorStatus & LINEAR) == LINEAR){
-               //(sensorStatus == (AM | LINEAR) || sensorStatus == (AG | LINEAR) || sensorStatus == (AGM | LINEAR) )){
-           mLAccelerationReading[0] = (mLAccelerationReading[0] + mLAccelerationOldReading[0])/2;
-           mLAccelerationReading[1] = (mLAccelerationReading[1] + mLAccelerationOldReading[1])/2;
-           mLAccelerationReading[2] = (mLAccelerationReading[2] + mLAccelerationOldReading[2])/2;
+       if(LAL.ready){
+           //(sensorStatus == (AM | LINEAR) || sensorStatus == (AG | LINEAR) || sensorStatus == (AGM | LINEAR) )){
+           LAL.getValues( mLAccelerationReading);
+
+           //Low pass filter.!
+           final float alpha = 0.8f;
+           // alpha is calculated as t / (t + dT)
+           // with t, the low-pass filter's time-constant
+           // and dT, the event delivery rate
+
+           mLAccelerationReading[0] = alpha * mAccelerometerOldReading[0] + (1 - alpha) * mLAccelerationReading[0];
+           mLAccelerationReading[1] = alpha * mAccelerometerOldReading[1] + (1 - alpha) * mLAccelerationReading[1];
+           mLAccelerationReading[2] = alpha * mAccelerometerOldReading[2] + (1 - alpha) * mLAccelerationReading[2];
+
+           LAL.ready = false;
            linearDirty = true;
+           System.arraycopy(mLAccelerationReading, 0, mLAccelerationOldReading, 0, mLAccelerationReading.length);
        }
         if(sensorStatus == AM){
             // Update rotation matrix, which is needed to update orientation angles.
