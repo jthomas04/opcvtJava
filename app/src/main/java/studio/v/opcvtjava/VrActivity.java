@@ -401,9 +401,9 @@ public class VrActivity extends Activity implements SensorEventListener2 {
             a.setRotation(mat4);
             //2, 1, 0 because X axis moves right positively.
             if(linearDirty){
-                a.moveForward(mLAccelerationReading[0]);
+                a.moveForward(mLAccelerationReading[2]);
                 a.moveUp(mLAccelerationReading[1]);
-                a.moveRight(mLAccelerationReading[2]);
+                a.moveRight(mLAccelerationReading[0]);
                 linearDirty = false;
             }
 

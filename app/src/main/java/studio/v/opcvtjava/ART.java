@@ -598,6 +598,18 @@ public class ART {
         return res;
     }
 
+    public float [] computeRotationMat(Mat rv){
+        Mat RM = new Mat();
+        float [] result = new float[9];
+        Mat YZNegative = new Mat(1,3, rv.type());
+        YZNegative.put(0,1, -1.0);
+        YZNegative.put(0,3,-1.0);
+        rv = rv.mul(YZNegative);
+        Calib3d.Rodrigues(rv, RM);
+        RM.get(0,0, result);
+        return result;
+    }
+
     public float[] computeEulers(Mat rv){
         Mat RM = new Mat();
         Calib3d.Rodrigues(rv, RM);
