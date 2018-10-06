@@ -16,16 +16,24 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".325"
+        android:layout_weight=".225"
         android:onClick="startVR"
         android:text="Vr Activity" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".225"
+        android:onClick="startMarkerAR"
+        android:text="Marker AR(Under Development)" />
 
     <Button
         android:id="@+id/button4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".325"
+        android:layout_weight=".225"
         android:onClick="startAR"
-        android:text="AR Pipeline" />
+        android:text="NF AR Pipeline" />
 
 </LinearLayout>

@@ -289,7 +289,7 @@ public class ART {
         now = System.currentTimeMillis();
         diff = now - last;
         last = now;
-        //Log.w(TAG, "Time Taken ORB:  " + diff);
+        Log.w(TAG, "Time Taken ORB:  " + diff);
 
         lFrameKP = frameKeyPoints.toList();
         //Log.w(TAG,"Keypoints = "  + lFrameKP.size());

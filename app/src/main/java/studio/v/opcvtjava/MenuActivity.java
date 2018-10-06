@@ -76,6 +76,13 @@ public class MenuActivity extends AppCompatActivity {
         this.finish();
     }
 
+    public void startMarkerAR(View view){
+        Intent next = new Intent(this, MarkerArActivity.class);
+        startActivity(next);
+
+        this.finish();
+    }
+
     public void startVR(View view){
         Intent next = new Intent(this, VrActivity.class);
         startActivity(next);

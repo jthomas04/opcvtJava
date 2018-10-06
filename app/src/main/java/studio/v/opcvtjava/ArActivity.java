@@ -69,8 +69,8 @@ import java.util.List;
 public class ArActivity extends RendererActivity implements CvCameraViewListener2 {
     private static final String TAG = " MC2:Activity "; //For all logging purposes
 
-    private CameraBridgeViewBase mOpenCvCameraView; // Stores reference Camera view of OpenCV, YES JUST A REFERENCE VEEJAY NOT THE ACTUAL THING!!
-    private RelativeLayout rl; //ThIs iS aLsO aN rEfErEnCe AKA a Pointer from The  old C Days, yes JAVA is the SaMe UgLy PoInTeRs In A NiCe FlOwErY PaCkAgE, LiKe CeRtAiN pEoPlE WhO SuGaRiFy!!
+    private CameraBridgeViewBase mOpenCvCameraView; // Stores reference Camera view of OpenCV,
+    private RelativeLayout rl; //ThIs iS aLsO aN rEfErEnCe AKA a Pointer from The  old C Days, yes JAVA is the SaMe UgLy PoInTeRs In A NiCe FlOwErY PaCkAgE
     protected GLSurfaceView glv;
     private ImageView debugView; //TODO: Debuging only remove, UnEcEsSaRy, Just There for my ObLiGaTiOn, YoU KnOw LiKe sOcIaL oBlIgAtIoNs.....
 
@@ -138,7 +138,7 @@ public class ArActivity extends RendererActivity implements CvCameraViewListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.w(TAG, "super.onCreate Finished, It Started working Veejay....");
+        Log.w(TAG, "super.onCreate Finished, It Started working");
         Uri uri = (Uri) getIntent().getExtras().get("iUri");
         loadBitmap(uri);
         // TODO: Remove after debug these 2 lines
@@ -546,9 +546,8 @@ public class ArActivity extends RendererActivity implements CvCameraViewListener
         _cube.rotation().y = (yEuler*180/(float)Math.PI);
         _cube.rotation().z = (zEuler*180/(float)Math.PI);
         _cube.position().x = XC;
-        _cube.position().z =  ZC/1000-5;
+        _cube.position().z =  ZC/1000 - 5;
         _cube.position().y = -YC/10;
-
         //Log.w(TAG, "Cube Position : " + _cube.position().x + " " + _cube.position().y + " " + _cube.position().z);
     }
 

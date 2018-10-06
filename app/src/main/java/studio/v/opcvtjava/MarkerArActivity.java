@@ -2,10 +2,9 @@ package studio.v.opcvtjava;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
+import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -15,6 +14,7 @@ import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.CvType;
@@ -26,14 +26,18 @@ import org.rajawali3d.view.SurfaceView;
 import java.util.LinkedList;
 import java.util.List;
 
-import min3d.core.RendererActivity;
 
-public class MarkerArActivity  extends RendererActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
+public class MarkerArActivity  extends Activity implements CameraBridgeViewBase.CvCameraViewListener2 {
 
     private final String TAG = "MARAct";
-    private Mat mRgba, mGray, mRgbaT;
+    private Mat mRgba, mGray, mRgbaT, mRgbaF;
 
+    private SurfaceView surfaceView;
     private BaseRenderer bR;
+    private PermissionHandler PH;
+    //Array containing Permissions : Camera & READ External Storage.
+    private String [] camAndExtRead = {Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
+    private boolean cvStarted = false;
 
     private CameraBridgeViewBase mOpenCvCameraView;
 
@@ -58,15 +62,23 @@ public class MarkerArActivity  extends RendererActivity implements CameraBridgeV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        PH = new PermissionHandler(camAndExtRead, this, this, "I need permissions to run! You moron!!");
+
         setContentView(R.layout.obj_viewer);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.camera_view);
         mOpenCvCameraView.setVisibility(android.view.SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
 
-        SurfaceView surfaceView = (SurfaceView) findViewById(R.id.sV);
+        surfaceView = (SurfaceView) findViewById(R.id.sV);
         surfaceView.setFrameRate(60.0);
+
+        surfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        surfaceView.setTransparent(true);
         surfaceView.setRenderMode(ISurface.RENDERMODE_WHEN_DIRTY);
+
+        surfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR | GLSurfaceView.DEBUG_LOG_GL_CALLS);
 
         bR = new BaseRenderer(this);
         surfaceView.setSurfaceRenderer(bR);
@@ -76,26 +88,35 @@ public class MarkerArActivity  extends RendererActivity implements CameraBridgeV
         bR.mRotationMatrix[ 9] = 1;
         bR.mRotationMatrix[ 15] = 1;
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, 1024);
-        }
+        surfaceView.setZOrderOnTop(true);
+        //_glSurfaceView.setSurfaceRenderer(bR);
+
 
     }
+
+//    @Override
+//    protected void glSurfaceViewConfig() {
+//        // Example which makes glSurfaceView transparent (along with setting scene.backgroundColor to 0x0)
+//       _glSurfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+//       _glSurfaceView.setEGLConfigChooser(8, 8, 8, 8, 0, 0);
+//       //_glSurfaceView.setZOrderOnTop(true);
+//    }
+//    @Override
+//    protected void onCreateSetContentView()
+//    {
+//
+//
+//
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-                    Toast.makeText(this, "I need permissions to run! You moron!!", Toast.LENGTH_LONG);
-                    this.finish();
-                }
-                return;
+        int results = PH.processResults(requestCode, permissions, grantResults);
+        // Just add this one line with the PermisssionHandler object now, shows your Toast & returns £ of permissions granted.
+        if (!cvStarted)
+            startCV();
+        //surfaceView.bringToFront();
 
     }
 
@@ -107,12 +128,10 @@ public class MarkerArActivity  extends RendererActivity implements CameraBridgeV
     @Override
     public void onResume() {
         super.onResume();
-        if (!OpenCVLoader.initDebug()) {
-            Log.d(TAG, "Internal OpenCv Library not found. using OpenCv Manager for initialization");
-            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
-        } else {
-            Log.d(TAG, "Internal OpenCv Library found inside pacakge. Using it!");
-            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        if(PH.checkAllPermisions(PermissionHandler.CamAndExtRead, this) && !cvStarted){
+            startCV();
+            //surfaceView.bringToFront();
+            cvStarted = true;
         }
     }
     @Override
@@ -128,8 +147,8 @@ public class MarkerArActivity  extends RendererActivity implements CameraBridgeV
         mRgba = new Mat(height, width, CvType.CV_8UC4);
         //mRRgba = new Mat(height, width, CvType.CV_8UC4);
         mGray = new Mat(height, width, CvType.CV_8U);
-        //mRgbaF = new Mat(height, width, CvType.CV_8UC4);
-        mRgbaT = new Mat(width, height, CvType.CV_8UC4);
+        mRgbaF = new Mat(height, width, CvType.CV_8UC4);
+        mRgbaT = new Mat( height, width, CvType.CV_8UC4);
         //fMask = new Mat(height, width, CvType.CV_8U);
 
     }
@@ -145,6 +164,7 @@ public class MarkerArActivity  extends RendererActivity implements CameraBridgeV
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         mRgba = inputFrame.rgba();
+        //mRgbaT = mRgba.t();
         mGray = inputFrame.gray();
 
         Mat thresholded = new Mat();
@@ -158,16 +178,29 @@ public class MarkerArActivity  extends RendererActivity implements CameraBridgeV
         //Converters.vector_vector_Point_to_Mat(allContours, allCurves);
         //Converters.Mat_to_vector_vector_Point2f();
         Mat hier = new Mat();
-        Imgproc.findContours(thresholded, allContours, hier, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE );
-        for(MatOfPoint contour: allContours) {
-            Imgproc.approxPolyDP(contour, polygon, Imgproc.arcLength(contour, true)*0.02, true);
+        Imgproc.findContours(thresholded, allContours, hier, Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_NONE);
+        for (MatOfPoint contour : allContours) {
+            //Imgproc.approxPolyDP(contour, polygon, Imgproc.arcLength(contour, true)*0.02, true);
 
-            if(polygon.size().height == 4  || polygon.size().width == 4 && Math.abs(Imgproc.contourArea(polygon)) > 1000 && Imgproc.isContourConvex(polygon) ){
+            if (polygon.size().height == 4 || polygon.size().width == 4 && Math.abs(Imgproc.contourArea(polygon)) > 1000 && Imgproc.isContourConvex(polygon)) {
                 double maxCosine = 0;
 
+            }
+
         }
+        //Log.w(TAG, mRgba.toString());
+        //Log.w(TAG, mRgbaT.toString());
+        //Core.rotate(mRgbaT, mRgbaF,Core.ROTATE_90_CLOCKWISE);
+        return mRgba;
+    }
 
-
-        return null;
+    private void startCV(){
+        if (!OpenCVLoader.initDebug()) {
+            Log.d(TAG, "Internal OpenCv Library not found. using OpenCv Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_0_0, this, mLoaderCallback);
+        } else {
+            Log.d(TAG, "Internal OpenCv Library found inside pacakge. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
     }
 }
