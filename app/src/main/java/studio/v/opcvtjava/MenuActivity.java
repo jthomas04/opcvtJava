@@ -77,7 +77,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void startMarkerAR(View view){
-        Intent next = new Intent(this, MarkerArActivity.class);
+        Intent next = new Intent(this, MarkerSelectorActivity.class);
         startActivity(next);
 
         this.finish();

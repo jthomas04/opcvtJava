@@ -13,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <activity android:name=".MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,15 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MarkerArActivity" android:screenOrientation="landscape">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
 
-        <activity android:name=".VrActivity" android:screenOrientation="portrait"></activity>
-        <activity android:name=".ArActivity" android:screenOrientation="landscape"></activity>
+        <activity android:name=".MarkerArActivity" android:screenOrientation="landscape">
+        </activity>
+        <activity android:name=".MarkerSelectorActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".VrActivity" android:screenOrientation="portrait" />
+        <activity android:name=".ArActivity" android:screenOrientation="landscape" />
     </application>
 
 </manifest>

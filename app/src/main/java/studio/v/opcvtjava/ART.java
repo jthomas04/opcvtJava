@@ -200,6 +200,12 @@ public class ART {
 
     }
 
+    public int getMarkerFeatures(){
+        detector.detect(marker, markerKeypoints);
+        lMarkerKP = markerKeypoints.toList();
+        return lMarkerKP.size();
+    }
+
     public void loadMarkerGrayScale(Bitmap bmp)
     {
         Mat mMarker;
@@ -220,6 +226,11 @@ public class ART {
         now = System.currentTimeMillis();
         diff = now - last;
         Log.w(TAG, "Time taken for  bitmapToMat = " + diff +"ms");
+        setMarkerData();
+    }
+
+    public void setMarker(Mat m){
+        marker = m;
         setMarkerData();
     }
 

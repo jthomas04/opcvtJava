@@ -5,7 +5,7 @@
     xmlns:opencv="http://schemas.android.com/apk/res-auto"
     android:id="@+id/relLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <org.opencv.android.JavaCameraView
@@ -16,24 +16,27 @@
         opencv:camera_id="any"
         opencv:show_fps="true" />
 
+    <Button
+        android:id="@+id/markBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:onClick="chooseAsMarker"
+        android:text="Select Marker" />
+
     <ImageView
         android:id="@+id/iv"
         android:layout_width="@android:dimen/thumbnail_height"
         android:layout_height="@android:dimen/thumbnail_height"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
         android:contentDescription="marker for debugging"
         android:visibility="visible"
         opencv:srcCompat="@drawable/pic_border" />
-
-    <Button
-        android:id="@+id/start"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:onClick="placeObject"
-        android:text="Place Object" />
 
 </RelativeLayout>
 

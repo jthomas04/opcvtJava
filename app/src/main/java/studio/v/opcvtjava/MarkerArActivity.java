@@ -73,12 +73,12 @@ public class MarkerArActivity  extends Activity implements CameraBridgeViewBase.
         surfaceView = (SurfaceView) findViewById(R.id.sV);
         surfaceView.setFrameRate(60.0);
 
-        surfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
-        surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+        //surfaceView.getHolder().setFormat(PixelFormat.TRANSLUCENT);
+        //surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         surfaceView.setTransparent(true);
         surfaceView.setRenderMode(ISurface.RENDERMODE_WHEN_DIRTY);
 
-        surfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR | GLSurfaceView.DEBUG_LOG_GL_CALLS);
+        //surfaceView.setDebugFlags(GLSurfaceView.DEBUG_CHECK_GL_ERROR | GLSurfaceView.DEBUG_LOG_GL_CALLS);
 
         bR = new BaseRenderer(this);
         surfaceView.setSurfaceRenderer(bR);

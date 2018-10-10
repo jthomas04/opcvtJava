@@ -18,6 +18,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
     private final static String TAG = "BaseCVCameraActivity";
     private PermissionHandler PH;
     private CameraBridgeViewBase mOpenCvCameraView;
+    private boolean cvStarted;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -35,12 +36,12 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
             }
         }
     };
-    private boolean cvStarted;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        PH = new PermissionHandler(PermissionHandler.CamAndExtRead, this, this, "I need permissions to run! You moron!!");
+        PH = new PermissionHandler(PermissionHandler.CamAndExtWrite, this, this, "I need permissions to run! You moron!!");
         setContentView(R.layout.camera);
         mOpenCvCameraView = (JavaCameraView)findViewById(R.id.camera_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
@@ -94,6 +95,10 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
         }
     }
 
+    public CameraBridgeViewBase getCameraView(){
+        return mOpenCvCameraView;
+    }
+
     public void onCameraViewStarted(int width, int height) {
 
     }
@@ -106,6 +111,9 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
         return null;
     }
 
+
+    //Override this function to do whatever you need done to start the cameraView
+    //Example: getCameraView().enableView()..... Also do all opencv dependant calls after this point
     public void openCVReady(){
         Log.e(TAG, "You should override me!!");
     }
