@@ -17,7 +17,7 @@ public class FeaturesWithMat {
     List<Point> lMatchedKeypoints;
 
 //    public FeaturesWithMat(){
-//
+//        m = new Mat();
 //    }
 
     public FeaturesWithMat(Mat marker){

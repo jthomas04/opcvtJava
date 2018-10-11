@@ -73,6 +73,7 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
         centrePoint = new Point(W/2, (H-20)/2);
         markerCorners = computeMarkerCorners(width, height, markerSize, centrePoint);
         chkMarker = new checkMarker(FM);
+        marker = new NFMarker(new Mat());
     }
 
     @Override
@@ -95,6 +96,7 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
             boolean checkingMarker = (chkMarker.getStatus() == AsyncTask.Status.RUNNING);
             boolean finishedChecking = chkMarker.getStatus() == AsyncTask.Status.FINISHED;
             boolean notStarted = chkMarker.getStatus() == AsyncTask.Status.PENDING;
+            Log.w(TAG, "markerC = " + markerCorners.toString());
             if(notStarted){
                 mRGBA2 = mRGBA.submat(markerCorners);
                 mRGBA2.copyTo(marker.getMat());
@@ -133,11 +135,12 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
         int bottom = (int) ((height + side)/2);
         int left = (int) (side/2); //Since co-ords start from TL (0,0)
         int right = (int) ((3*side/2)); // 1/2 side + 1 side = 3*sides /2
+        int s = (int)side;
 //        int [] TL = {left , top};
 //        int [] TR = {right , top};
 //        int [] BL = {left, bottom};
 //        int [] BR = {right, bottom};
-        return new Rect(top, left, right, bottom);
+        return new Rect(top, left, s, s);
     }
 
 
