@@ -53,7 +53,7 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
     }
 
     @Override
-    public void openCVReady(){
+    public void onOpenCVReady(){
         mCamera.enableView();
         mCamera.enableFpsMeter();
         Log.w(TAG, "Circling!! Yay!");

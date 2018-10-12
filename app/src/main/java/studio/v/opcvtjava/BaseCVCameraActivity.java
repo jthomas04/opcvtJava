@@ -27,7 +27,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
                 case LoaderCallbackInterface.SUCCESS:
                 {
                     Log.w(TAG, "OpenCv Loaded sucessfully");
-                    openCVReady();
+                    onOpenCVReady();
                 }break;
                 default:
                 {
@@ -42,10 +42,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PH = new PermissionHandler(PermissionHandler.CamAndExtWrite, this, this, "I need permissions to run! You moron!!");
-        setContentView(R.layout.camera);
-        mOpenCvCameraView = (JavaCameraView)findViewById(R.id.camera_view);
-        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        mOpenCvCameraView.setCvCameraViewListener(this);
+        createContentView();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
@@ -85,6 +82,13 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
 
     }
 
+    protected void createContentView(){
+        setContentView(R.layout.camera);
+        mOpenCvCameraView = (JavaCameraView)findViewById(R.id.camera_view);
+        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
+        mOpenCvCameraView.setCvCameraViewListener(this);
+    }
+
     private void startCV(){
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCv Library not found. using OpenCv Manager for initialization");
@@ -114,7 +118,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
 
     //Override this function to do whatever you need done to start the cameraView
     //Example: getCameraView().enableView()..... Also do all opencv dependant calls after this point
-    public void openCVReady(){
+    public void onOpenCVReady(){
         Log.e(TAG, "You should override me!!");
     }
 
