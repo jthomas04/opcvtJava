@@ -10,11 +10,13 @@ import org.opencv.android.CameraBridgeViewBase;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfDMatch;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MarkerSelectorActivity extends BaseCVCameraActivity {
@@ -44,6 +46,8 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
     private final int markerSize = 750;
     private Rect markerCorners;
     private checkMarker chkMarker;
+
+    private FeaturesManager FeMa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -124,6 +128,14 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
             }
 
         }
+        else if (markerStatus == markerFinalized){
+            Log.w(TAG, "Analyzinf frame");
+            NFImage frame = new NFImage(mGRAY);
+            frame.analyze(FeMa);
+            List<MatOfDMatch> matches = FeMa.matchFeatures(marker.descriptors, frame.descriptors);
+            FeMa.getGoodFeatures(matches, marker, frame);
+            currentColor = sOrange;
+        }
         Imgproc.drawMarker(mRGBA, centrePoint, currentColor, Imgproc.MARKER_SQUARE, markerSize, 1, Imgproc.LINE_8 );
         return mRGBA;
     }
@@ -172,7 +184,7 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
     }
 
     private class checkMarker extends AsyncTask<NFMarker, Void, Short>  {
-        private FeaturesManager FeMa;
+
 
         checkMarker(FeaturesManager fm){
             FeMa = fm;

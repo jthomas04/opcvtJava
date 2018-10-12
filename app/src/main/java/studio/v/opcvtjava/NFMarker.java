@@ -10,7 +10,7 @@ public class NFMarker extends FeaturesWithMat{
 
     public void analyze(FeaturesManager FM){
         FM.getKeypointsM(this);
-        FM.computeDesc1(this, this.lKeypoints, true);
+        FM.computeDesc1(this, true);
     }
 
 }
