@@ -13,6 +13,7 @@ public class FeaturesWithMat {
 
     short keypoints;
     Mat descriptors;
+    Mat mask;
     List<KeyPoint> lKeypoints;
     List<Point> lMatchedKeypoints;
 
@@ -25,9 +26,16 @@ public class FeaturesWithMat {
         lKeypoints = new ArrayList<KeyPoint>();
         lMatchedKeypoints = new LinkedList<Point>();
         m = marker;
+        mask = new Mat();
     }
 
     public Mat getMat(){
         return m;
     }
+
+    public void setMask(Mat maskToSet){
+        mask = maskToSet;
+    }
+
+
 }

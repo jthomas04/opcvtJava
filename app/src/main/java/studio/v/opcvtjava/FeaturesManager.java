@@ -19,14 +19,14 @@ public class FeaturesManager {
         mKeypoints2 = new MatOfKeyPoint();
     }
 
-    public void getKeypointsM(NFMarker marker){
+    public void getKeypointsM(FeaturesWithMat marker){
         detector.detect(marker.getMat(), mKeypoints1);
         marker.lKeypoints = mKeypoints1.toList();
         marker.keypoints = (short)marker.lKeypoints.size();
     }
 
-    public void computeDesc1(NFMarker marker, List<KeyPoint> lKeypoints, boolean pointsGiven){
-        detector.detectAndCompute(marker.getMat(), null, mKeypoints1, marker.descriptors, pointsGiven);
+    public void computeDesc1(FeaturesWithMat marker, List<KeyPoint> lKeypoints, boolean pointsGiven){
+        detector.detectAndCompute(marker.getMat(), marker.mask , mKeypoints1, marker.descriptors, pointsGiven);
     }
 
 }

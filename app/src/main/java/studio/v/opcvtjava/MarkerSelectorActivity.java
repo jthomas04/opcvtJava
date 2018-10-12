@@ -111,7 +111,9 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
                 if(finishedChecking){
                     currentColor = sOrange;
                     try {
-                        markerStatus = (chkMarker.get() >= 10) ?markerFinalized: markerRejected;
+                        markerStatus = (chkMarker.get() >= 250) ?markerFinalized: markerRejected;
+                        Log.w(TAG, "MARKER HAS FEATURS = " + chkMarker.get());
+                        updateUI();
                     }  catch (ExecutionException e) {
                         e.printStackTrace();
                     }catch (InterruptedException e) {
@@ -144,21 +146,29 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
     }
 
 
-
     public void chooseAsMarker(View view){
         if(markerStatus == markerFinalized){
             markerStatus = noMarker;
             markerSelectBtn.setText("Re-select Marker");
         }
-        else if(markerStatus == noMarker){
+        else if(markerStatus == noMarker || markerStatus == markerRejected){
             markerStatus = markerSelected;
             markerSelectBtn.setText("Processing Marker");
         }
-        else if(markerStatus == markerRejected){
-            markerStatus = noMarker;
-            markerSelectBtn.setText("Select Marker");
-        }
 
+    }
+
+    private void updateUI(){
+        runOnUiThread(new Runnable() {
+
+            public void run() {
+                //HERE I WANT TO UPDATE MY TEXT VIEW
+                if(markerStatus == markerFinalized)
+                    markerSelectBtn.setText("Marker selected!!");
+                else
+                    markerSelectBtn.setText("Re-select Marker");
+            }
+        });
     }
 
     private class checkMarker extends AsyncTask<NFMarker, Void, Short>  {

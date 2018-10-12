@@ -112,7 +112,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
     }
 
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        return null;
+        return inputFrame.rgba();
     }
 
 
