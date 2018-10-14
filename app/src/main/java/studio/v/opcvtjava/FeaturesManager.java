@@ -25,7 +25,8 @@ public class FeaturesManager {
     private List<DMatch> goodMatches;
     private DMatch [] dmatch;
 
-    private double matchRatio = 0.0, dist, minDist = Double.MIN_VALUE, maxDist = 0, matchRatioThreshold = 0.8;
+    private double matchRatio = 0.0, dist, minDist = Double.MAX_VALUE, maxDist = 0;
+    double matchRatioThreshold = 0.8;
 
 
     public FeaturesManager(){
@@ -60,23 +61,26 @@ public class FeaturesManager {
 
     public List<MatOfDMatch> matchFeatures(Mat desc1, Mat desc2){
         if(desc1.cols() != desc2.cols()){
+            Log.e(TAG, "Can't match!!");
             return matches;
         }
         matcher.knnMatch(desc1, desc2, matches, 2);
+        Log.e(TAG," matches = " + matches.size());
         return matches;
     }
 
     public List<DMatch> getGoodFeatures(List<MatOfDMatch> matches,  FeaturesWithMat ref, FeaturesWithMat image){
-        if(matches.size() == 0)
+        if(matches.size() == 0) {
+            Log.e(TAG, "no matches!");
             return goodMatches;
-
+        }
         for(MatOfDMatch mdm: matches){
             dmatch = mdm.toArray();
             matchRatio = dmatch[0].distance/dmatch[1].distance;
             if(matchRatio < matchRatioThreshold){
                 goodMatches.add(dmatch[0]);
-                ref.lMatchedKeypoints.add(ref.lKeypoints.get(dmatch[0].trainIdx).pt);
-                image.lMatchedKeypoints.add(image.lKeypoints.get(dmatch[0].queryIdx).pt);
+                ref.lGoodKeypoints.add(ref.lKeypoints.get(dmatch[0].trainIdx).pt);
+                image.lGoodKeypoints.add(image.lKeypoints.get(dmatch[0].queryIdx).pt);
             }
         }
 

@@ -16,6 +16,7 @@ public class FeaturesWithMat {
     Mat mask;
     List<KeyPoint> lKeypoints;
     List<Point> lMatchedKeypoints;
+    List<Point> lGoodKeypoints;
 
 //    public FeaturesWithMat(){
 //        m = new Mat();
@@ -25,6 +26,7 @@ public class FeaturesWithMat {
         descriptors = new Mat();
         lKeypoints = new ArrayList<KeyPoint>();
         lMatchedKeypoints = new LinkedList<Point>();
+        lGoodKeypoints = new ArrayList<>();
         m = marker;
         mask = new Mat();
     }
