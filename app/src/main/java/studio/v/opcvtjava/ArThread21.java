@@ -28,7 +28,7 @@ public class ArThread21 extends AsyncTask<Mat, Mat, Mat> {
     private Mat prevImage = new Mat(), mask = new Mat();
 
     public int state = ART.noHomo;
-    public int i, nMatches, nGMatches, nFrameKps, nInliers, nFeatures;
+    public int i, nMatches, nGMatches, nTMatches, nFrameKps, nInliers, nFeatures;
 
     public ART t;
 
@@ -71,7 +71,7 @@ public class ArThread21 extends AsyncTask<Mat, Mat, Mat> {
             return new Mat();
         } else {
             List<List<Point>> matchingPoints = new LinkedList<>();
-            nGMatches = t.getMatchingPointsOPF(prevImage, mGray, lPreviousP, matchingPoints); //This function returns number of matches it could track
+            nTMatches = t.getMatchingPointsOPF(prevImage, mGray, lPreviousP, matchingPoints); //This function returns number of matches it could track
             //TL.timeIt(TAG, "matching points with sparseOpticalFlow");
             if (nGMatches >= 4) {
                 setState(true, ART.tracking);

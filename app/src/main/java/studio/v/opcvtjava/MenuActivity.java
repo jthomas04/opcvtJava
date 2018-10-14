@@ -70,7 +70,7 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     public void startAR(View view){
-        Intent next = new Intent(this, MainActivity.class);
+        Intent next = new Intent(this, ArActivity2.class);
         startActivity(next);
 
         this.finish();

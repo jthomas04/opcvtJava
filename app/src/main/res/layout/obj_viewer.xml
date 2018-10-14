@@ -8,18 +8,19 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="25dp">
 
-    <org.opencv.android.JavaCameraView
-        android:id="@+id/camera_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone" />
-
     <org.rajawali3d.view.SurfaceView
         android:id="@+id/sV"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:visibility="visible" />
+        android:visibility="visible"
+        app:isTransparent="true"/>
+
+    <org.opencv.android.JavaCameraView
+        android:id="@+id/camera_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone" />
 
 </RelativeLayout>

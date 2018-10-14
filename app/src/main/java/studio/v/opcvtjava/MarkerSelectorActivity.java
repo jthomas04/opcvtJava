@@ -9,6 +9,7 @@ import android.widget.Button;
 import org.opencv.android.CameraBridgeViewBase;
 
 import org.opencv.core.CvType;
+import org.opencv.core.DMatch;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfDMatch;
 import org.opencv.core.Point;
@@ -129,11 +130,12 @@ public class MarkerSelectorActivity extends BaseCVCameraActivity {
 
         }
         else if (markerStatus == markerFinalized){
-            Log.w(TAG, "Analyzinf frame");
+            Log.w(TAG, "Analyzing frame");
             NFImage frame = new NFImage(mGRAY);
             frame.analyze(FeMa);
-            List<MatOfDMatch> matches = FeMa.matchFeatures(marker.descriptors, frame.descriptors);
-            FeMa.getGoodFeatures(matches, marker, frame);
+            List<MatOfDMatch> matches = FeMa.matchFeatures(frame.descriptors, marker.descriptors);
+            List<DMatch> goodMatches = FeMa.getGoodFeatures(matches, marker, frame);
+            Log.w(TAG, "matches = " + matches.size() + "goodM = " + goodMatches.size());
             currentColor = sOrange;
         }
         Imgproc.drawMarker(mRGBA, centrePoint, currentColor, Imgproc.MARKER_SQUARE, markerSize, 1, Imgproc.LINE_8 );

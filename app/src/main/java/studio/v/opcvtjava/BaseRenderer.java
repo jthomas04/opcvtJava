@@ -45,15 +45,18 @@ public class BaseRenderer extends Renderer {
                 material.addTexture(earthTexture);
 
             } catch (ATexture.TextureException error){
-                Log.e( "Rendere.initScene", error.toString());
+                Log.e( "Renderer.initScene", error.toString());
 
             }
             a = new Sphere(1,30,30);
             a.setMaterial(material);
-            a.setPosition(0,0,-5);
+            a.setPosition(0,0,-20);
             a.setRotation(0,0,-90);
             getCurrentCamera().setPosition(0,0,0);
             getCurrentScene().addChild(a);
+
+            //getCurrentScene().setBackgroundColor(1,1,1,0);
+
 
         }
 
@@ -80,6 +83,7 @@ public class BaseRenderer extends Renderer {
             //mat4.rotate(new Vector3(0,0,1), 180);
             //mat4.rotate(new Vector3(1,0,0),-45);
             getCurrentCamera().setRotation(mat4); //.inverse());
+
             //a.setRotation(mat4);
             //2, 1, 0 because X axis moves right positively.
             /*if(linearDirty){

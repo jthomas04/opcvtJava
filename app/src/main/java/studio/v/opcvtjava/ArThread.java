@@ -36,7 +36,9 @@ class ArThread extends AsyncTask<Mat,Integer, Mat> {
     private Mat prevImage = new Mat(), mask = new Mat();
 
     public int state = ART.noHomo;
-    public int i, nMatches, nGMatches, nFrameKps, nInliers, nFeatures;
+    public int i, nMatches, nGMatches, nTMatches, nFrameKps, nInliers, nFeatures;
+
+    public List<List<Point>> matchingPoints;
 
     public ART t;
     public boolean trackerSucess = false;
@@ -69,7 +71,7 @@ class ArThread extends AsyncTask<Mat,Integer, Mat> {
 
     public ArThread(Object mainObject, ART artObject){
         MC = mainObject;
-        Log.w(TAG, "Class Intialized");
+        //Log.w(TAG, "Class Intialized");
         t = artObject;
         state = ART.noHomo;
     }
@@ -159,8 +161,8 @@ class ArThread extends AsyncTask<Mat,Integer, Mat> {
                         Logit("No previous Points Computed!!");
                     } else {
                         //TL.start();
-                        List<List<Point>> matchingPoints = new LinkedList<>();
-                        nGMatches = t.getMatchingPointsOPF(prevImage, mGray, lPreviousP, matchingPoints); //This function returns number of matches it could track
+                        matchingPoints = new LinkedList<>();
+                        nTMatches = t.getMatchingPointsOPF(prevImage, mGray, lPreviousP, matchingPoints); //This function returns number of matches it could track
                         //TL.timeIt(TAG, "matching points with sparseOpticalFlow");
                         if (nGMatches >= 4) {
                             setState(true, ART.tracking);
@@ -199,7 +201,7 @@ class ArThread extends AsyncTask<Mat,Integer, Mat> {
                     }
                 //}
             //}
-            Log.w(TAG, "I could't use the tracking matcher");
+            //Log.w(TAG, "I could't use the tracking matcher");
             t.mask = new Mat();
             List<MatOfDMatch> mdms = t.matchFeatures(mGray);
             Log.w(TAG, "Keypoints = " + t.lFrameKP.size());

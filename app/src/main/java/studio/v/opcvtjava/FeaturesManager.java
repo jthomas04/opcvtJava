@@ -69,7 +69,7 @@ public class FeaturesManager {
         return matches;
     }
 
-    public List<DMatch> getGoodFeatures(List<MatOfDMatch> matches,  FeaturesWithMat ref, FeaturesWithMat image){
+    public List<DMatch> getGoodFeatures(List<MatOfDMatch> matches,  FeaturesWithMat image, FeaturesWithMat ref){
         if(matches.size() == 0) {
             Log.e(TAG, "no matches!");
             return goodMatches;
