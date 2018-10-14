@@ -19,6 +19,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
     private PermissionHandler PH;
     private CameraBridgeViewBase mOpenCvCameraView;
     private boolean cvStarted;
+    private boolean paused = false;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -36,6 +37,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
             }
         }
     };
+
 
 
     @Override
@@ -61,10 +63,13 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
         super.onPause();
         if(mOpenCvCameraView!=null)
             mOpenCvCameraView.disableView();
+        paused = true;
     }
     @Override
     public void onResume() {
         super.onResume();
+        if (paused)
+            mOpenCvCameraView.enableView();
         if(PH.checkAllPermisions(PermissionHandler.CamAndExtRead, this) && !cvStarted){
             startCV();
             //surfaceView.bringToFront();
@@ -87,6 +92,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
         mOpenCvCameraView = (JavaCameraView)findViewById(R.id.camera_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
+
     }
 
     private void startCV(){
@@ -94,7 +100,7 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
             Log.d(TAG, "Internal OpenCv Library not found. using OpenCv Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_3_4_0, this, mLoaderCallback);
         } else {
-            Log.d(TAG, "Internal OpenCv Library found inside pacakge. Using it!");
+            Log.d(TAG, "Internal OpenCv Library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
     }
@@ -118,8 +124,9 @@ public class BaseCVCameraActivity extends Activity implements CameraBridgeViewBa
 
     //Override this function to do whatever you need done to start the cameraView
     //Example: getCameraView().enableView()..... Also do all opencv dependant calls after this point
-    public void onOpenCVReady(){
-        Log.e(TAG, "You should override me!!");
+    protected void onOpenCVReady(){
+        mOpenCvCameraView.enableView();
+        Log.e(TAG , "onOpenCVReady(): You should override me!!");
     }
 
 }
