@@ -220,9 +220,11 @@ public class AureikARHome extends Activity implements SensorEventListener2 {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
             SensorManager.getRotationMatrixFromVector(mRotationMatrixIn, event.values);
-            SensorManager.remapCoordinateSystem(mRotationMatrixIn, SensorManager.AXIS_Z, SensorManager.AXIS_MINUS_Y, mRotationMatrixOut);
-            quaternion = new Quaternion().fromMatrix(floatToDoubleArray(mRotationMatrixIn));
+
+            SensorManager.remapCoordinateSystem(mRotationMatrixIn, SensorManager.AXIS_Z, SensorManager.AXIS_Y, mRotationMatrixOut);
+            quaternion = new Quaternion().fromMatrix(floatToDoubleArray(mRotationMatrixOut));
             arRenderer.setQuaternion(quaternion);
+
         }
 
     }

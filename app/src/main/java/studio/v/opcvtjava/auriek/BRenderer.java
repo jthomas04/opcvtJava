@@ -5,10 +5,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Toast;
 
 import org.rajawali3d.Object3D;
 import org.rajawali3d.lights.DirectionalLight;
@@ -284,6 +286,18 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
             }
 
             case MotionEvent.ACTION_UP: {
+                Toast t = Toast.makeText(context, "Placing Object at selected point", Toast.LENGTH_LONG);
+                t.show();
+
+                Vector3 result = unProject((double)ev.getX(), (double)ev.getY(), getCurrentCamera().getNearPlane());
+                result.x/=2;
+                result.y/=2;
+                result.z/=2;
+                Log.w("long PRESS", "Position = {" + result.toString() + "} ");
+                if(centered == null) return;
+                else{
+                    centered.setPosition(result);
+                }
                 mActivePointerId = INVALID_POINTER_ID;
                 break;
             }
@@ -303,7 +317,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
     public void onRender(final long elapsedTime, final double deltaTime) {
         super.onRender(elapsedTime, deltaTime);
         if (AR) {
-            mRotationMatrix = new Matrix4(quaternion.inverse());
+            mRotationMatrix = new Matrix4(quaternion);
             getCurrentCamera().setRotation(mRotationMatrix);
         }
     }
