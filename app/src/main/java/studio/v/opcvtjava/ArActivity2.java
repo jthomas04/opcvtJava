@@ -10,12 +10,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.JavaCameraView;
-
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
@@ -31,10 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-
-import min3d.core.Object3dContainer;
-import min3d.objectPrimitives.Box;
-import min3d.vos.Light;
 
 public class ArActivity2 extends BaseCVCameraActivity {
 
@@ -312,6 +306,9 @@ public class ArActivity2 extends BaseCVCameraActivity {
                     XC = (float) t.tv.get(0, 0)[0];
                     YC = (float) t.tv.get(1, 0)[0];
                     ZC = (float) t.tv.get(2, 0)[0];
+                    bR.mTranslationMatrix[0] = XC/100;
+                    bR.mTranslationMatrix[1] = YC/10;
+                    bR.mTranslationMatrix[2] = ZC/100;
                 } else {
                     finalState = t.noVectors;
                 }

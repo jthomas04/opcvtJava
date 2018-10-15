@@ -28,6 +28,15 @@
         <activity android:name=".VrActivity" android:screenOrientation="portrait" />
         <activity android:name=".ArActivity" android:screenOrientation="landscape" />
         <activity android:name=".ArActivity2" android:screenOrientation="landscape" />
+        <activity android:name=".auriek.AureikARHome" android:screenOrientation="portrait" />
+        <activity android:name=".auriek.AureikHome" android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".auriek.AureikSticker" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

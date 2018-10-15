@@ -83,6 +83,9 @@ public class BaseRenderer extends Renderer {
             //mat4.rotate(new Vector3(0,0,1), 180);
             //mat4.rotate(new Vector3(1,0,0),-45);
             getCurrentCamera().setRotation(mat4); //.inverse());
+            getCurrentCamera().setX(mTranslationMatrix[0]);
+            getCurrentCamera().setY(mTranslationMatrix[1]);
+            getCurrentCamera().setZ(mTranslationMatrix[2]);
 
             //a.setRotation(mat4);
             //2, 1, 0 because X axis moves right positively.

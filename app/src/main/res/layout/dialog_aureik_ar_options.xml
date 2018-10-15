@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="500dp"
+
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:weightSum="9">
+
+    <Button
+        android:id="@+id/aureikMode0Button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="@color/colorPrimary"
+        android:textSize="18sp"
+        android:onClick="dialog_onarclick"
+         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3" />
+
+    <Button
+        android:id="@+id/aureikMode1Button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="@color/colorPrimary"
+        android:textSize="18sp"
+        android:onClick="dialog_onarclick"
+        android:text="Load an Image"
+         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3" />
+
+    <Button
+        android:id="@+id/aureikMode2Button"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="@color/colorPrimary"
+        android:textSize="18sp"
+        android:onClick="dialog_onarclick"
+        android:text="Load a model"
+         />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="horizontal"
+        android:weightSum="1.0">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:gravity="center"
+            android:text="Coming Soon"
+             />
+
+        <Button
+            android:id="@+id/aureikARModeButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.4"
+            android:background="@color/colorPrimary"
+            android:text="toggle"
+            android:onClick="dialog_onarclick"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

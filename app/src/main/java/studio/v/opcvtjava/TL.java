@@ -56,7 +56,7 @@ public class TL {
         if (!Logs) return;
         if(flusher != null){
             try {
-                flusher.invoke(attachedObject, null);
+                flusher.invoke(attachedObject, new Object[1]);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
