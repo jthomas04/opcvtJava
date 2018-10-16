@@ -56,6 +56,8 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
     private Matrix4 mRotationMatrix;
     private int mActivePointerId = INVALID_POINTER_ID;
     private ScaleGestureDetector mScaleDetector;
+    private GestureDetector gDetector;
+    private AureikGestureListener mGestureListener;
     private float scaleFactor = 1f;
     private float cameraRadius = 10f;
     private Uri objfile;
@@ -67,6 +69,8 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
         logIt("Initialising render thread in " + mode + "mode", RendererThread);
         quaternion = new Quaternion();
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mGestureListener = new AureikGestureListener();
+        gDetector = new GestureDetector(context, new AureikGestureListener());
     }
 
     BRenderer(Context context, int mode, Uri objfile) {
@@ -77,6 +81,8 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
         logIt("Initialising render thread in " + mode + "mode", RendererThread);
         quaternion = new Quaternion();
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mGestureListener = new AureikGestureListener();
+        gDetector = new GestureDetector(context, new AureikGestureListener());
     }
 
     BRenderer(Context context, int mode, @Nullable Bitmap stickerImage) {
@@ -87,6 +93,8 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
         logIt("Initialising render thread in " + mode + "mode", RendererThread);
         quaternion = new Quaternion();
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mGestureListener = new AureikGestureListener();
+        gDetector = new GestureDetector(context, new AureikGestureListener());
     }
 
     public void setView(View view) {
@@ -218,6 +226,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
     public void onTouchEvent(MotionEvent ev) {
         if (centered == null) return;
         mScaleDetector.onTouchEvent(ev);
+        gDetector.onTouchEvent(ev);
         MotionEvent.PointerCoords index;
         MotionEvent.PointerCoords others;
         final int action = ev.getAction();
@@ -286,18 +295,6 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
             }
 
             case MotionEvent.ACTION_UP: {
-                Toast t = Toast.makeText(context, "Placing Object at selected point", Toast.LENGTH_LONG);
-                t.show();
-
-                Vector3 result = unProject((double)ev.getX(), (double)ev.getY(), getCurrentCamera().getNearPlane());
-                result.x/=2;
-                result.y/=2;
-                result.z/=2;
-                Log.w("long PRESS", "Position = {" + result.toString() + "} ");
-                if(centered == null) return;
-                else{
-                    centered.setPosition(result);
-                }
                 mActivePointerId = INVALID_POINTER_ID;
                 break;
             }
@@ -384,10 +381,11 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
         }
     }
 
-    private class AureikGestureListener implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
+    private class AureikGestureListener extends GestureDetector.SimpleOnGestureListener {
+
         @Override
         public boolean onDown(MotionEvent e) {
-            return false;
+            return true;
         }
 
         @Override
@@ -397,7 +395,19 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
-            return false;
+            Toast t = Toast.makeText(context, "Placing Object at selected point", Toast.LENGTH_LONG);
+            t.show();
+
+            Vector3 result = unProject((double)e.getX(), (double)e.getY(), getCurrentCamera().getNearPlane());
+            result.x/=2;
+            result.y/=2;
+            result.z/=2;
+            Log.w("long PRESS", "Position = {" + result.toString() + "} ");
+            if(centered == null) return true;
+            else{
+                centered.setPosition(result);
+            }
+            return true;
         }
 
         @Override
@@ -415,24 +425,24 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
             return false;
         }
 
-        @Override
-        public boolean onScale(ScaleGestureDetector detector) {
-            scaleFactor *= detector.getScaleFactor();
-            // Don't let the object get too small or too large.
-            scaleFactor = Math.max(0.01f, Math.min(scaleFactor, 5.0f));
-            touchVals[3] = scaleFactor;
-            centered.setScale(scaleFactor);
-            return false;
-        }
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector detector) {
-            return false;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector detector) {
-
-        }
+//        @Override
+//        public boolean onScale(ScaleGestureDetector detector) {
+//            scaleFactor *= detector.getScaleFactor();
+//            // Don't let the object get too small or too large.
+//            scaleFactor = Math.max(0.01f, Math.min(scaleFactor, 5.0f));
+//            touchVals[3] = scaleFactor;
+//            centered.setScale(scaleFactor);
+//            return true;
+//        }
+//
+//        @Override
+//        public boolean onScaleBegin(ScaleGestureDetector detector) {
+//            return true;
+//        }
+//
+//        @Override
+//        public void onScaleEnd(ScaleGestureDetector detector) {
+//
+//        }
     }
 }
