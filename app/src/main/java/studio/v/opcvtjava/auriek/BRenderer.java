@@ -27,6 +27,7 @@ import org.rajawali3d.math.Quaternion;
 import org.rajawali3d.math.vector.Vector3;
 import org.rajawali3d.primitives.Plane;
 import org.rajawali3d.renderer.Renderer;
+import org.rajawali3d.util.GLU;
 
 import studio.v.opcvtjava.R;
 
@@ -54,6 +55,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
     Vector3 vec, campos;
     private Quaternion quaternion;
     private Matrix4 mRotationMatrix;
+    private Vector3 positionVector;
     private int mActivePointerId = INVALID_POINTER_ID;
     private ScaleGestureDetector mScaleDetector;
     private GestureDetector gDetector;
@@ -112,6 +114,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
                 final LoaderOBJ loaderOBJ = new LoaderOBJ(mContext.getResources(), mTextureManager, R.raw.addiee);
                 logIt("loading for default object", AsyncParserThread);
                 loadModel(loaderOBJ, this, R.raw.addiee);
+
             }
             break;
             case STICKER: {
@@ -196,13 +199,19 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
             final LoaderOBJ obj = (LoaderOBJ) loader;
             logIt("Successfully loaded default object", AsyncParserThread);
             final Object3D parsedObject = obj.getParsedObject();
-            parsedObject.setPosition(Vector3.ZERO);
+            //parsedObject.setPosition(Vector3.ZERO);
+
             centered = parsedObject;
             centered.setDoubleSided(true);
 //            centered.getMaterial().enableLighting(false);
             centered.getMaterial().setDiffuseMethod(new DiffuseMethod.Lambert());
             centered.getMaterial().setSpecularMethod(new SpecularMethod.Phong());
             centered.getMaterial().setColorInfluence(0.5f);
+            try {
+                centered.getMaterial().addTexture(new Texture("diffuse_texture", R.drawable.addiee));
+            } catch (ATexture.TextureException e) {
+                logIt(e.getMessage(), RendererThread);
+            };
             centered.setColor(0xe33448);
             logIt("Successfully added default object", RendererThread);
 //            if (!AR) {
@@ -211,6 +220,10 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
 //            }
 //            else ARinits(centered);
         }
+        Vector3 pos = this.unProject(getDefaultViewportHeight()/2, getDefaultViewportHeight()/2, getCurrentCamera().getNearPlane());
+        pos.x/=2;
+        pos.y/=2;
+        pos.z/=2;
     }
 
     @Override
@@ -265,7 +278,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
                     midy = (index.y + others.y) / 2;
                     double y = centered.getY();
                     if (!AR)
-                        centered.setPosition(new Vector3((midx - midPrev[0]) * 0.01, (midy - midPrev[1]) * -0.01, y));
+                        centered.setPosition(new Vector3((midx - midPrev[0]) * 0.01, (midy - midPrev[1]) * - 0.01, y));
 //                    else
 //                        centered.setPosition(new Vector3((midx - midPrev[0]) * -0.01, (midy - midPrev[1]) * 0.01, y));
                     logIt("getting mid Point coords to move object " + midx + " " + midy, RendererThread);
@@ -274,7 +287,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
                     double si2 = centered.getRotX();
                     if (AR)
 //                        centered.rotate(eulerstoRMat(centered.getRotZ(), si1 - (index.x - indexPrev[0]), si2 - (index.y - indexPrev[1])));
-                        centered.setRotation(centered.getRotZ(), si1 - (index.x - indexPrev[0]), si2 - (index.y - indexPrev[1]));
+                        centered.setRotation(centered.getRotZ(), si1 - (index.x - indexPrev[0]) * 0.25, si2 - (index.y - indexPrev[1]) * 0.25);
 //                        centered.setRotation(centered.getRotX(),  si2 - (index.x - indexPrev[0]),centered.getRotZ());
                     else {
 //                        double ix,iy,iz;
@@ -286,8 +299,8 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
 //                        centered.setRotation(centered.getRotZ(), si1 - (index.x - indexPrev[0]), si2 - (index.y - indexPrev[1]));
 //                        centered.setRotation(eulerstoRMat(Math.toDegrees(centered.getRotX()), si1 - (index.x - indexPrev[0]), si2 - (index.y - indexPrev[1])));
 
-                        centered.setRotY(si1 - (index.x - indexPrev[0]));
-                        centered.setRotZ(si2 - (index.y - indexPrev[1]));
+                        centered.setRotY(si1 - (index.x - indexPrev[0]) * 0.25);
+                        centered.setRotZ(si2 - (index.y - indexPrev[1]) * 0.25);
                     }
                 }
                 logIt("touched by " + ev.getPointerCount() + " fingers", RendererThread);
@@ -317,6 +330,34 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
             mRotationMatrix = new Matrix4(quaternion);
             getCurrentCamera().setRotation(mRotationMatrix);
         }
+    }
+
+    @Override
+    public Vector3 unProject(double dX, double dY, double dZ) {
+        double[] np4 = new double[4]; //near plane
+        np4[0] = 0;
+        np4[1] = 0;
+        np4[2] = getDefaultViewportWidth();
+        np4[3] = getDefaultViewportHeight();
+
+        int[] mViewport = new int[]{0, 0, getDefaultViewportWidth(), getDefaultViewportHeight()};
+        double x = dX;
+        double y = dY;
+        double z = dZ;
+
+//        float[] mmatrix=ArrayUtils.convertDoublesToFloats(getCurrentCamera().getViewMatrix().getDoubleValues());
+//        float[] pmatrix=ArrayUtils.convertDoublesToFloats(getCurrentCamera().getProjectionMatrix().getDoubleValues());
+
+
+        GLU.gluUnProject(
+                x, getDefaultViewportHeight() - y, z,
+                getCurrentCamera().getViewMatrix().getDoubleValues(), 0,
+                getCurrentCamera().getProjectionMatrix().getDoubleValues(), 0,
+                mViewport, 0,
+                np4, 0
+        );
+        return new Vector3((double) (np4[0] / np4[3]), (double) (np4[1] / np4[3]), (double) (np4[2] / np4[3]));
+
     }
 
     public void addChild(Object3D result) {
@@ -368,6 +409,11 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
     public void setQuaternion(Quaternion quaternion) {
         this.quaternion = quaternion;
     }
+    
+
+    public void setPositionVector(Vector3 positionVector) {
+        this.positionVector = positionVector;
+    }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
@@ -395,6 +441,7 @@ public class BRenderer extends Renderer implements IAsyncLoaderCallback {
 
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
+            if(!AR) return false;
             Toast t = Toast.makeText(context, "Placing Object at selected point", Toast.LENGTH_LONG);
             t.show();
 

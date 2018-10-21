@@ -36,15 +36,15 @@ import static studio.v.opcvtjava.auriek.AureikLogger.KEY_AR_state;
 import static studio.v.opcvtjava.auriek.AureikLogger.KEY_bitmap_sticker;
 import static studio.v.opcvtjava.auriek.AureikLogger.KEY_file_string;
 import static studio.v.opcvtjava.auriek.AureikLogger.KEY_mode_picked;
-import static studio.v.opcvtjava.auriek.AureikLogger.RendererThread;
 import static studio.v.opcvtjava.auriek.AureikLogger.UiThread;
 import static studio.v.opcvtjava.auriek.AureikLogger.logIt;
 
 
 public class AureikARHome extends Activity implements SensorEventListener2 {
-    static final int PICKFILE_REQUEST_CODE = 1512435;
-    static final int STICKER_REQUEST_CODE = 1215435;
+    static final int PICKFILE_REQUEST_CODE = 12435;
+    static final int STICKER_REQUEST_CODE = 15435;
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 024513;
+    private static final int MY_PERMISSIONS_REQUEST_CAMERA = 024514;
     private static AlertDialog alertDialog;
     private static int modePicked = 0;
     private static Uri uriSticker, uriModel;
@@ -89,24 +89,23 @@ public class AureikARHome extends Activity implements SensorEventListener2 {
         if (savedInstanceState == null) {
             Bundle extras = getIntent().getExtras();
             if (extras != null) {
-                try {
                     ARstate = extras.getBoolean(KEY_AR_state);
                     if (!ARstate)
                         logIt("AR STATE IS FALSE when its supposed to be true make sure it doesn't happen", UiThread);
                     modePicked = extras.getInt(KEY_mode_picked);
                     String file = extras.getString(KEY_file_string);
                     String sticker = extras.getString(KEY_bitmap_sticker);
-                    uriSticker = Uri.parse(sticker);
-                    uriModel = Uri.parse(file);
-                    logIt("got URIs " + uriSticker + " " + uriModel, RendererThread);
-                } catch (Exception e) {
-                    logIt(e.getMessage(), UiThread);
-                }
+                    if(modePicked == 1){
+                        uriSticker = Uri.parse(sticker);
+                    }
+                    else if (modePicked == 2) {
+                        uriModel = Uri.parse(file);
+                    }
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_STORAGE);
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_PERMISSIONS_REQUEST_CAMERA);
             else
                 permitted = true;
         }
@@ -220,11 +219,9 @@ public class AureikARHome extends Activity implements SensorEventListener2 {
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_GAME_ROTATION_VECTOR) {
             SensorManager.getRotationMatrixFromVector(mRotationMatrixIn, event.values);
-
-            SensorManager.remapCoordinateSystem(mRotationMatrixIn, SensorManager.AXIS_Z, SensorManager.AXIS_Y, mRotationMatrixOut);
-            quaternion = new Quaternion().fromMatrix(floatToDoubleArray(mRotationMatrixOut));
-            arRenderer.setQuaternion(quaternion);
-
+            SensorManager.remapCoordinateSystem(mRotationMatrixIn, SensorManager.AXIS_Z, SensorManager.AXIS_MINUS_Y, mRotationMatrixOut);
+            quaternion = new Quaternion().fromMatrix(floatToDoubleArray(mRotationMatrixIn));
+            arRenderer.setQuaternion(quaternion.inverse());
         }
 
     }
@@ -288,12 +285,12 @@ public class AureikARHome extends Activity implements SensorEventListener2 {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_STORAGE: {
+            case MY_PERMISSIONS_REQUEST_CAMERA: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     permitted = true;
                 } else {
-                    Toast.makeText(this, "Please grant storage permissions to access the file", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "AR mod doesn't work withput Camera!! Give the permissions", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }

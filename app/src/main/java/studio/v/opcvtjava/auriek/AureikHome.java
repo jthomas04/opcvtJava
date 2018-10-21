@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -32,7 +33,7 @@ import static studio.v.opcvtjava.auriek.AureikLogger.logIt;
 
 //TODO FILE ACCESS FIX gotta fix that, Making the stickerGenerator activity Aureik-ish , Drag Sensing, Using the sensors RotationVector if available or Gyro if now also WHY is there not a rotation vector sensor in some phones are they dumb? do they think that by not including one SOFTWARE BASED SENSOR they can reduce the phone price? meh Its surprising You're still reading this get to work!
 public class AureikHome extends Activity {
-    static final int PICKFILE_REQUEST_CODE = 1512435;
+    static final int PICKFILE_REQUEST_CODE = 12435;
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 024513;
     private static AlertDialog alertDialog;
     private static int modePicked = 0;
@@ -195,6 +196,7 @@ public class AureikHome extends Activity {
             case R.id.aureikARModeButton:
                 Intent arMode = new Intent(AureikHome.this, AureikARHome.class);
                 arMode.putExtra(KEY_mode_picked, modePicked);
+                Log.w("Mode = " + KEY_mode_picked, "uriModel = " + uriModel.toString());
                 if (uriSticker != null) arMode.putExtra(KEY_bitmap_sticker, uriSticker.toString());
                 if (uriModel != null) arMode.putExtra(KEY_file_string, uriModel.toString());
                 arMode.putExtra(KEY_AR_state, true);
